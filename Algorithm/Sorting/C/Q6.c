@@ -30,35 +30,32 @@ void swap(int *p1, int *p2) {
     return;
 }
 
-void BuildMaxHeap(int arr[], int n) {
-    if (n <= 0) return;
-    int i;
-    for (i = n / 2 - 1; i > 0  ; i--) {
-        HeapAdjust(arr, n ,i);
+void HeapAdjust(int arr[], int k, int n) {   // 调整节点 k，堆大小 n
+    int largest = k;                 // 假设自己最大
+    int lson = 2 * k + 1;
+    int rson = 2 * k + 2;
+
+    if (lson < n && arr[largest] < arr[lson]) largest = lson;
+    if (rson < n && arr[largest] < arr[rson]) largest = rson;
+    if (largest != k) {
+        swap(&arr[largest], &arr[k]);
+        HeapAdjust(arr, largest, n); // 继续往下调整，堆大小不变
     }
 }
 
-void HeapAdjust(int arr[], int k, int n) {
-    int largest = n;
-    int lson = n * 2 + 1;
-    int rson = n * 2 + 2;
-
-    if (lson < n && arr[largest] < arr[lson]) largest = lson;
-    if (lson < n && arr[largest] < arr[rson]) largest = rson;
-    if (largest != n) {
-        swap(&arr[largest], &arr[n]);
-        HeapAdjust(arr, k, largest);
-    }
-    return;
+void BuildMaxHeap(int arr[], int n) {
+    for (int i = n / 2 - 1; i >= 0; i--)   // 从最后一个非叶节点到根（含 0）
+        HeapAdjust(arr, i, n);
 }
 
 void HeapSort(int arr[], int n) {
     BuildMaxHeap(arr, n);
-    for (int i = n -1 ; i > 0 ; i--) {
-        swap(&arr[i], &arr[0]);
-        HeapAdjust(arr, i, 0);
+    for (int i = n - 1; i > 0; i--) {
+        swap(&arr[i], &arr[0]);     // 堆顶（最大）换到末尾
+        HeapAdjust(arr, 0, i);      // 调整根，堆大小缩到 i
     }
 }
+
 
 void PrintArr(int arr[] , int n) {
     if (n <= 0) return;
